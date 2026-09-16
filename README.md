@@ -104,7 +104,9 @@ sudo mariadb
 Kemudian:
 
 ```sql
-CREATE USER 'koperasi'@'localhost' IDENTIFIED BY 'password_database';
+
+CREATE DATABASE IF NOT EXISTS koperasi;
+CREATE USER IF NOT EXISTS 'koperasi'@'localhost' IDENTIFIED BY 'password_database';
 GRANT ALL PRIVILEGES ON koperasi.* TO 'koperasi'@'localhost';
 FLUSH PRIVILEGES;
 EXIT;
