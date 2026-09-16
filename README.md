@@ -36,9 +36,6 @@ sudo dnf install -y nodejs
 node -v
 npm -v
 
-
-node -v
-npm -v
 ```
 
 Jika server belum memiliki Node.js, instal Node.js LTS terlebih dahulu.
@@ -48,7 +45,7 @@ Jika server belum memiliki Node.js, instal Node.js LTS terlebih dahulu.
 Pastikan MariaDB aktif:
 
 ```bash
-sudo apt install mariadb-server mariadb-client
+sudo dnf install mariadb-server mariadb-client
 sudo systemctl enable --now mariadb
 sudo systemctl status mariadb
 ```
