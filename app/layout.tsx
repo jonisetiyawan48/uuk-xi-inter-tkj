@@ -1,39 +1,6 @@
-import type { Metadata } from "next";
-import Link from "next/link";
-import "./globals.css";
-
-export const metadata: Metadata = {
-  title: "Koperasi Sumber Makmur",
-  description: "Katalog koperasi berbasis Next.js dan MariaDB",
-};
-
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
-  return (
-    <html lang="id">
-      <body>
-        <div className="paper surface-grid">
-          <header className="nav">
-            <div className="container nav-inner">
-              <Link href="/" className="brand">
-                <span className="brand-mark">SM</span>
-                <span>Koperasi Sumber Makmur</span>
-              </Link>
-
-              <nav className="nav-links">
-                <Link href="/">Beranda</Link>
-                <Link href="/catalog">Katalog</Link>
-                <Link href="/admin">Admin</Link>
-              </nav>
-            </div>
-          </header>
-
-          {children}
-        </div>
-      </body>
-    </html>
-  );
-}
+import type { Metadata } from 'next';
+import Link from 'next/link';
+import './globals.css';
+export const dynamic = 'force-dynamic';
+export const metadata: Metadata = { title: {default:'Kopsis Moklet Malang',template:'%s | Kopsis Moklet'}, description:'Koperasi siswa Moklet Malang. Temukan kebutuhan belajar, perlengkapan sekolah, dan informasi layanan kopsis.' };
+export default function RootLayout({children}:{children:React.ReactNode}) {return <html lang="id"><body><div className="paper"><div className="school-bar"><div className="container"><span>SMK TELKOM MALANG · KOPERASI SISWA</span><span className="school-motto">Attitude is Everything</span><a href="https://smktelkom-mlg.sch.id/" target="_blank" rel="noreferrer">Website sekolah ↗</a></div></div><header className="nav"><div className="container nav-inner"><Link href="/" className="brand"><img className="brand-logo" src="/brand/moklet-logo.png" alt="SMK Telkom Malang" width="135" height="44"/><span className="brand-name">KOPSIS MOKLET<small>Koperasi Siswa · Malang</small></span></Link><nav className="nav-links" aria-label="Navigasi utama"><Link href="/">Beranda</Link><Link href="/catalog">Katalog</Link><Link href="/layanan">Layanan</Link><Link href="/tentang">Tentang</Link><Link href="/keanggotaan">Keanggotaan</Link><Link href="/kontak">Informasi</Link><Link className="btn btn-dark" href="/admin">Pengelola ↗</Link></nav></div></header>{children}<footer className="footer"><div className="container footer-grid"><div><Link className="brand" href="/">Kopsis Moklet Malang</Link><p>Kebutuhan sekolah dekat, semangat belajar tetap hebat.</p><small>Konsep situs koperasi siswa. Data produk dan harga awal merupakan contoh.</small></div><div><b>Jelajahi kopsis</b><p><Link href="/catalog">Katalog kebutuhan siswa</Link></p><p><Link href="/layanan">Layanan & cara belanja</Link></p></div><div><b>Untuk warga sekolah</b><p><Link href="/keanggotaan">Informasi keanggotaan</Link></p><p><Link href="/kontak">Panduan & pertanyaan umum</Link></p></div></div></footer></div></body></html>}

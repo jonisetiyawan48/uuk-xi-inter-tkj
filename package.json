@@ -1,5 +1,5 @@
 {
-  "name": "katalog-koperasi-sumber-makmur-nextjs",
+  "name": "katalog-kopsis-moklet-malang-nextjs",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -8,15 +8,21 @@
     "prebuild": "npm run db:seed",
     "build": "next build",
     "start": "next start -H 0.0.0.0 -p 3000",
-    "lint": "next lint"
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "audit:lab": "npm audit",
+    "audit:lab:json": "npm audit --json",
+    "snyk:lab": "snyk test --file=package.json --package-manager=npm"
   },
   "dependencies": {
+    "axios": "0.21.1",
+    "dotenv": "^16.6.1",
+    "lodash": "4.17.20",
+    "lucide-react": "^0.545.0",
     "mysql2": "^3.14.4",
     "next": "^15.5.0",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0",
-    "lucide-react": "^0.545.0",
-    "dotenv": "^16.6.1"
+    "react-dom": "^19.1.0"
   },
   "devDependencies": {
     "@types/node": "^22.15.0",

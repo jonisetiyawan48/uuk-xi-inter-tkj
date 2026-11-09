@@ -1,18 +1,23 @@
-# Katalog Koperasi Sumber Makmur — Next.js + MariaDB Lab
+# Kopsis Moklet Malang — Koperasi Siswa
 
-Aplikasi ini adalah **fullstack Next.js App Router** untuk lab praktikum keamanan web. Tidak menggunakan Docker, Express, maupun ORM. Database menggunakan **MariaDB** dan seluruh akses data aplikasi menggunakan **SQL native melalui mysql2**.
+Situs katalog kebutuhan sekolah dengan Next.js App Router dan MariaDB. Halaman meliputi beranda, katalog dengan pencarian/filter/sortir, detail produk, tentang kopsis, layanan, panduan keanggotaan, informasi/FAQ, serta pengelolaan produk dan kategori.
 
-Target deployment: **server Linux CentOS lokal/LAN**. Tidak membutuhkan Nginx, domain, HTTPS, atau Certbot.
+## Data dan batas fitur
 
-## Fitur
-- Katalog produk dan detail produk.
-- Search produk dari MariaDB.
-- Kategori.
-- Dashboard admin.
-- CRUD produk dan kategori.
-- API route Next.js.
-- SQL native dengan `mysql2`.
-- Mode lab untuk SQL Injection dasar dan XSS dasar.
+- Seed menyediakan 10 contoh produk sekolah dengan ilustrasi SVG lokal. Harga dan stok adalah contoh, bukan informasi resmi sekolah.
+- Seed tidak menghapus data lama. Instalasi yang sudah berisi produk koperasi desa dapat menonaktifkan produk lama dan menghapus kategori kosong melalui panel pengelola setelah pemeriksaan data.
+- Jam layanan, alamat ruang, kontak, pengurus, dan aturan keanggotaan menunggu konfirmasi sekolah. Situs tidak mengklaimnya sebagai informasi resmi.
+- Pembelian dilakukan langsung. Belum ada checkout, pembayaran, pencatatan penjualan, atau simpanan anggota.
+- Panel pengelola yang diwarisi proyek belum memiliki autentikasi. Batasi akses ke lingkungan lokal/LAN sebelum menambahkan autentikasi untuk penggunaan publik.
+- Mode normal menggunakan pencarian berparameter dan menampilkan deskripsi sebagai teks. Mode praktikum backend hanya aktif jika `LAB_MODE=true` secara eksplisit.
+
+## Identitas visual
+
+Warna merah `#c81e25`, latar putih/abu netral, dan Plus Jakarta Sans mengikuti referensi [situs SMK Telkom Malang](https://smktelkom-mlg.sch.id/). Logo berasal dari aset sekolah di `/images/logo/logo_hitam.png`. Font disajikan lokal dengan lisensi SIL OFL di `public/fonts/OFL.txt`.
+
+## Praktikum pemindaian dependensi
+
+Dependensi latihan dikunci pada `lodash@4.17.20` dan `axios@0.21.1`. Panduan npm audit, Snyk, snapshot temuan, batas keterjangkauan kode, dan latihan perbaikan ada di [docs/PRAKTIKUM-DEPENDENSI.md](docs/PRAKTIKUM-DEPENDENSI.md). Informasi ini hanya ada pada repository, tidak pada halaman situs.
 
 ## Persyaratan
 - CentOS/RHEL-compatible Linux.
@@ -90,7 +95,7 @@ DB_USER=koperasi
 DB_PASSWORD=password_database
 DB_NAME=koperasi
 
-LAB_MODE=true
+LAB_MODE=false
 ```
 
 ### Membuat user MariaDB
@@ -179,7 +184,7 @@ pm2 status
 Lihat log:
 
 ```bash
-pm2 logs koperasi-sumber-makmur
+pm2 logs kopsis-moklet-malang
 ```
 
 Restart:
@@ -259,54 +264,7 @@ sudo firewall-cmd --list-ports
 
 ## 12. Mode praktikum keamanan
 
-### LAB_MODE=true
-
-Mode ini digunakan untuk praktikum. Beberapa bagian aplikasi sengaja dibuat rentan agar siswa dapat mengamati konsep dasar:
-
-- SQL Injection dasar pada search katalog.
-- Reflected XSS pada parameter pencarian.
-- Stored XSS pada deskripsi produk.
-
-Contoh lokasi praktikum:
-
-
-```text
-1. Sql Inection
-```
-
-```text
-/catalog?q=....
-```
-
-dan detail produk:
-
-```text
-/catalog/[id]
-```
-
-```text
-/catalog?q=' OR 1=1 OR p.name LIKE '
-```
-
-
-```text
-2. XSS Scripting
-```
-
-```text
-/admin/products/1/edit
-angka 1 merupakan ID produknya
-
-memasukan <script>alert('Reflected XSS Berhasil')</script> ke dalam field Deskripsi
-```
-
-```text
-Pengujian XSS bisa di cek dihalaman /catalog/1
-angka 1 merupakan ID produk yang kita edit tadi
-
-```
-
-
+Gunakan `LAB_MODE=false` untuk katalog kopsis. Deskripsi produk dan kata kunci pencarian ditampilkan sebagai teks biasa. Backend tetap menyimpan mode latihan SQL Injection lama, yang hanya aktif saat `LAB_MODE=true`; gunakan hanya pada lingkungan praktikum terisolasi. Demonstrasi XSS pada halaman publik lama telah diganti dengan tampilan informasi kopsis.
 
 ## 13. Update source code aplikasi
 
@@ -386,7 +344,7 @@ Pastikan Next.js listen pada `0.0.0.0:3000`, bukan hanya `127.0.0.1:3000`.
 ### Melihat log aplikasi
 
 ```bash
-pm2 logs koperasi-sumber-makmur
+pm2 logs kopsis-moklet-malang
 ```
 
 ## 16. Urutan instalasi singkat

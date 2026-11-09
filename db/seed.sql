@@ -36,19 +36,30 @@ CREATE TABLE IF NOT EXISTS products (
   INDEX idx_products_category (category_id), INDEX idx_products_name (name)
 ) ENGINE=InnoDB;
 
-INSERT INTO users (name,email,phone,role,status) VALUES
-('Admin Koperasi','admin@sumbermakmur.desa','081234567890','ADMIN','ACTIVE'),
-('Warga Sumber Makmur','warga@sumbermakmur.desa','081234567891','USER','ACTIVE')
-ON DUPLICATE KEY UPDATE name=VALUES(name), phone=VALUES(phone), role=VALUES(role), status=VALUES(status);
-
+-- Data contoh kopsis. Tidak menghapus atau mengubah produk milik pengelola.
 INSERT IGNORE INTO categories (name,description) VALUES
-('Beras','Pilihan beras untuk kebutuhan keluarga'),('Gula','Gula pasir dan pemanis kebutuhan dapur'),('Minyak','Minyak goreng pilihan untuk dapur'),('Tepung','Tepung untuk memasak dan membuat kue'),('Telur','Telur segar untuk kebutuhan harian'),('Mie Instan','Mie instan berbagai pilihan rasa'),('Minuman','Minuman untuk keluarga'),('Kebutuhan Rumah Tangga','Kebutuhan sehari-hari untuk rumah'),('Lainnya','Produk kebutuhan lain');
-
+('Alat Tulis','Pulpen, pensil, dan perlengkapan untuk mencatat serta mengerjakan tugas'),
+('Buku & Kertas','Buku catatan dan kertas untuk kebutuhan belajar'),
+('Perlengkapan Sekolah','Perlengkapan pendukung kegiatan siswa di sekolah'),
+('Makanan Ringan','Camilan kemasan untuk menemani waktu istirahat'),
+('Minuman','Minuman kemasan untuk kebutuhan di sekolah');
 INSERT INTO products (category_id,name,description,image,price,unit,stock,active)
-SELECT c.id,'Beras Premium','Beras pulen berkualitas untuk hidangan keluarga setiap hari.','https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=900&q=85',75000,'5 Kg',50,1 FROM categories c WHERE c.name='Beras' AND NOT EXISTS (SELECT 1 FROM products WHERE name='Beras Premium');
+SELECT c.id,'Pulpen Gel Hitam','Pulpen tinta hitam untuk mencatat materi dan mengerjakan tugas. Periksa kenyamanan ujung pena sebelum membeli.','/products/pen.svg',3500,'pcs',60,1 FROM categories c WHERE c.name='Alat Tulis' AND NOT EXISTS (SELECT 1 FROM products WHERE name='Pulpen Gel Hitam');
 INSERT INTO products (category_id,name,description,image,price,unit,stock,active)
-SELECT c.id,'Beras Pulen Harum','Beras pulen dengan aroma harum, cocok untuk menu sehari-hari.','https://images.unsplash.com/photo-1536304993881-ff6e9eefa2a6?auto=format&fit=crop&w=900&q=85',68000,'5 Kg',24,1 FROM categories c WHERE c.name='Beras' AND NOT EXISTS (SELECT 1 FROM products WHERE name='Beras Pulen Harum');
+SELECT c.id,'Pensil 2B','Pensil 2B untuk menulis dan menggambar. Cocok untuk melengkapi tempat pensil siswa.','/products/pencil.svg',2500,'pcs',45,1 FROM categories c WHERE c.name='Alat Tulis' AND NOT EXISTS (SELECT 1 FROM products WHERE name='Pensil 2B');
 INSERT INTO products (category_id,name,description,image,price,unit,stock,active)
-SELECT c.id,'Minyak Goreng Kita','Minyak goreng jernih untuk masakan rumahan yang lezat.','https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&w=900&q=85',18500,'1 Liter',8,1 FROM categories c WHERE c.name='Minyak' AND NOT EXISTS (SELECT 1 FROM products WHERE name='Minyak Goreng Kita');
+SELECT c.id,'Penghapus Putih','Penghapus pensil untuk merapikan catatan dan sketsa di kertas.','/products/eraser.svg',2000,'pcs',8,1 FROM categories c WHERE c.name='Alat Tulis' AND NOT EXISTS (SELECT 1 FROM products WHERE name='Penghapus Putih');
 INSERT INTO products (category_id,name,description,image,price,unit,stock,active)
-SELECT c.id,'Sabun Cuci Piring','Membersihkan peralatan makan dengan cepat dan wangi segar.','https://images.unsplash.com/photo-1583947215259-38e31be8751f?auto=format&fit=crop&w=900&q=85',12500,'800 ml',0,1 FROM categories c WHERE c.name='Kebutuhan Rumah Tangga' AND NOT EXISTS (SELECT 1 FROM products WHERE name='Sabun Cuci Piring');
+SELECT c.id,'Buku Tulis 38 Lembar','Buku bergaris isi 38 lembar untuk catatan pelajaran. Pilihan sampul mengikuti ketersediaan di koperasi.','/products/notebook.svg',5000,'buku',80,1 FROM categories c WHERE c.name='Buku & Kertas' AND NOT EXISTS (SELECT 1 FROM products WHERE name='Buku Tulis 38 Lembar');
+INSERT INTO products (category_id,name,description,image,price,unit,stock,active)
+SELECT c.id,'Kertas Folio Bergaris','Kertas folio bergaris untuk tugas tertulis. Harga contoh dihitung per lembar.','/products/paper.svg',500,'lembar',100,1 FROM categories c WHERE c.name='Buku & Kertas' AND NOT EXISTS (SELECT 1 FROM products WHERE name='Kertas Folio Bergaris');
+INSERT INTO products (category_id,name,description,image,price,unit,stock,active)
+SELECT c.id,'Map Kancing A4','Map ukuran A4 untuk menyimpan lembar tugas dan dokumen sekolah agar lebih rapi.','/products/folder.svg',6000,'pcs',20,1 FROM categories c WHERE c.name='Perlengkapan Sekolah' AND NOT EXISTS (SELECT 1 FROM products WHERE name='Map Kancing A4');
+INSERT INTO products (category_id,name,description,image,price,unit,stock,active)
+SELECT c.id,'Tali ID Card Merah','Tali kartu identitas warna merah untuk kegiatan sekolah. Jenis kait diperiksa langsung di koperasi.','/products/lanyard.svg',10000,'pcs',0,1 FROM categories c WHERE c.name='Perlengkapan Sekolah' AND NOT EXISTS (SELECT 1 FROM products WHERE name='Tali ID Card Merah');
+INSERT INTO products (category_id,name,description,image,price,unit,stock,active)
+SELECT c.id,'Biskuit Cokelat','Biskuit kemasan untuk camilan saat istirahat. Periksa komposisi, informasi alergen, dan tanggal kedaluwarsa pada kemasan.','/products/snack.svg',3000,'bungkus',35,1 FROM categories c WHERE c.name='Makanan Ringan' AND NOT EXISTS (SELECT 1 FROM products WHERE name='Biskuit Cokelat');
+INSERT INTO products (category_id,name,description,image,price,unit,stock,active)
+SELECT c.id,'Air Mineral 600 ml','Air mineral dalam botol 600 ml. Pastikan segel kemasan utuh sebelum dikonsumsi.','/products/water.svg',3500,'botol',48,1 FROM categories c WHERE c.name='Minuman' AND NOT EXISTS (SELECT 1 FROM products WHERE name='Air Mineral 600 ml');
+INSERT INTO products (category_id,name,description,image,price,unit,stock,active)
+SELECT c.id,'Susu UHT Cokelat 200 ml','Susu UHT rasa cokelat kemasan 200 ml. Mengandung susu; baca informasi komposisi dan kedaluwarsa pada kemasan.','/products/milk.svg',5500,'kotak',24,1 FROM categories c WHERE c.name='Minuman' AND NOT EXISTS (SELECT 1 FROM products WHERE name='Susu UHT Cokelat 200 ml');

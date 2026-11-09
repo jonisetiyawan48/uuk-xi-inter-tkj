@@ -1,1 +1,1 @@
-import {CategoryForm} from '../../../../components/AdminForm'; export default function New(){return <><div className="eyebrow">Kategori</div><h2>Tambah kategori</h2><CategoryForm/></>}
+import {CategoryForm} from '../../../../components/AdminForm'; export default function New(){return <><div className="eyebrow">Kategori</div><h2>Tambah kategori kopsis</h2><p className="muted">Kelompokkan produk berdasarkan kebutuhan siswa, seperti alat tulis atau minuman.</p><CategoryForm/></>}

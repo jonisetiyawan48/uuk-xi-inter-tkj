@@ -1,7 +1,7 @@
 module.exports = {
   apps: [
     {
-      name: 'koperasi-sumber-makmur',
+      name: 'kopsis-moklet-malang',
       script: 'node_modules/next/dist/bin/next',
       args: 'start -H 0.0.0.0 -p 3000',
       cwd: __dirname,

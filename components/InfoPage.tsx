@@ -1,0 +1,2 @@
+import Link from 'next/link';
+export default function InfoPage({eyebrow,title,intro,children}:{eyebrow:string;title:string;intro:string;children:React.ReactNode}){return <main className="container section info-page"><div className="eyebrow">{eyebrow}</div><h1 className="page-title">{title}</h1><p className="lead">{intro}</p>{children}<div className="actions"><Link href="/catalog" className="btn btn-primary">Jelajahi katalog →</Link><Link href="/kontak" className="btn btn-ghost">Panduan kopsis</Link></div></main>}

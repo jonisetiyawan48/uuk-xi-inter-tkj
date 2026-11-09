@@ -1,0 +1,2 @@
+import Link from 'next/link';
+export default function NotFound(){return <main className="container section"><div className="eyebrow">404 / Kopsis Moklet</div><h1 className="page-title">Halaman tidak ditemukan.</h1><p className="lead">Produk mungkin sudah tidak aktif atau alamat halaman tidak sesuai. Temukan kebutuhan sekolahmu melalui katalog.</p><Link href="/catalog" className="btn btn-primary">Kembali ke katalog →</Link></main>}

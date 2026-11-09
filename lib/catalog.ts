@@ -93,3 +93,5 @@ export async function adminProducts(search = '') {
     [pattern, pattern]
   );
 }
+
+export async function getAdminProduct(id:number):Promise<Product[]> {return query<any[]>(`${select} WHERE p.id = ? LIMIT 1`,[id]);}
