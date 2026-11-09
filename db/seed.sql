@@ -1,5 +1,5 @@
-CREATE DATABASE IF NOT EXISTS `koperasi` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE koperasi;
+-- Database dipilih oleh scripts/seed.mjs melalui DB_NAME di .env.
+-- Untuk import manual, pilih database tujuan pada perintah mariadb.
 
 CREATE TABLE IF NOT EXISTS users (
   id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -37,6 +37,8 @@ CREATE TABLE IF NOT EXISTS products (
 ) ENGINE=InnoDB;
 
 -- Data contoh kopsis. Tidak menghapus atau mengubah produk milik pengelola.
+-- Harga dan stok berikut adalah data latihan, bukan data resmi sekolah.
+START TRANSACTION;
 INSERT IGNORE INTO categories (name,description) VALUES
 ('Alat Tulis','Pulpen, pensil, dan perlengkapan untuk mencatat serta mengerjakan tugas'),
 ('Buku & Kertas','Buku catatan dan kertas untuk kebutuhan belajar'),
@@ -63,3 +65,5 @@ INSERT INTO products (category_id,name,description,image,price,unit,stock,active
 SELECT c.id,'Air Mineral 600 ml','Air mineral dalam botol 600 ml. Pastikan segel kemasan utuh sebelum dikonsumsi.','/products/water.svg',3500,'botol',48,1 FROM categories c WHERE c.name='Minuman' AND NOT EXISTS (SELECT 1 FROM products WHERE name='Air Mineral 600 ml');
 INSERT INTO products (category_id,name,description,image,price,unit,stock,active)
 SELECT c.id,'Susu UHT Cokelat 200 ml','Susu UHT rasa cokelat kemasan 200 ml. Mengandung susu; baca informasi komposisi dan kedaluwarsa pada kemasan.','/products/milk.svg',5500,'kotak',24,1 FROM categories c WHERE c.name='Minuman' AND NOT EXISTS (SELECT 1 FROM products WHERE name='Susu UHT Cokelat 200 ml');
+
+COMMIT;

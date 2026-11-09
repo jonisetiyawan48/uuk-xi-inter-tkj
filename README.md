@@ -19,7 +19,30 @@ Warna merah `#c81e25`, latar putih/abu netral, dan Plus Jakarta Sans mengikuti r
 
 Dependensi latihan dikunci pada `lodash@4.17.20` dan `axios@0.21.1`. Panduan npm audit, Snyk, snapshot temuan, batas keterjangkauan kode, dan latihan perbaikan ada di [docs/PRAKTIKUM-DEPENDENSI.md](docs/PRAKTIKUM-DEPENDENSI.md). Informasi ini hanya ada pada repository, tidak pada halaman situs.
 
+Jalankan dari root proyek:
+
+```bash
+npm ci --ignore-scripts
+npm run audit:lab
+npm run audit:lab:json > audit-result.json
+npm audit --omit=dev
+```
+
+Untuk Snyk, sediakan CLI di PATH dan autentikasi terlebih dahulu:
+
+```bash
+snyk auth
+npm run snyk:lab
+snyk test --file=package.json --package-manager=npm --json > snyk-result.json
+```
+
+Temuan membuat scanner mengembalikan exit code bukan nol; ini hasil yang diharapkan dalam praktikum. Jangan jalankan `npm audit fix` sebelum merekam baseline. Kedua paket latihan tidak dipanggil oleh kode katalog; keberadaan versi rentan dalam dependency tree berbeda dengan bukti jalur eksploitasi aplikasi.
+
+Snapshot npm audit saat implementasi: **4 paket rentan (3 high, 1 moderate)**. Jumlah bisa berubah mengikuti advisory scanner. Snyk belum dijalankan karena CLI dan autentikasi tidak tersedia. Simpan token hanya di lingkungan lokal, bukan di Git.
+
+
 ## Persyaratan
+
 - CentOS/RHEL-compatible Linux.
 - Node.js LTS, disarankan Node.js 20 atau 22.
 - npm.
@@ -64,17 +87,17 @@ sudo mkdir -p /var/www
 cd /var/www
 ```
 
-Extract source ke:
+Clone repository proyek ke folder `uuk-xi-inter-tkj`:
 
 ```bash
-git clone https://github.com/jonisetiyawan48/vuln-web.git
+git clone https://github.com/jonisetiyawan48/uuk-xi-inter-tkj.git
 ```
 
 Kemudian:
 
 ```bash
-cd /var/www/vuln-web
-npm install
+cd /var/www/uuk-xi-inter-tkj
+npm ci
 ```
 
 ## 4. Konfigurasi database
@@ -117,15 +140,46 @@ FLUSH PRIVILEGES;
 EXIT;
 ```
 
-> `seed.sql` akan membuat database `koperasi` jika belum ada. User MariaDB harus memiliki hak untuk membuat database pada instalasi pertama, atau database dapat dibuat terlebih dahulu oleh administrator.
+> Buat database dan user terlebih dahulu dengan SQL di atas. Script seed memilih database melalui `DB_NAME` di `.env`; tidak membuat database sendiri. Jika menggunakan nama lain, sesuaikan SQL pembuatan database, hak akses user, dan `DB_NAME`. Tidak perlu mengubah file seed.
 
 ## 5. Seed database otomatis saat build
 
-**Ya. Pada versi ini database seed dijalankan otomatis ketika `mysql import` dijalankan.**
-
-Alurnya: waktu npm run build otomatis terimport
+`npm run build` otomatis menjalankan script `prebuild`, yaitu `npm run db:seed`, sebelum kompilasi Next.js. Script `scripts/seed.mjs` membaca `.env` lalu mengeksekusi `db/seed.sql` melalui mysql2. Tidak perlu menjalankan import SQL manual.
 
 `db/seed.sql` dibuat idempotent untuk struktur dan data contoh sehingga dapat dijalankan kembali tanpa sengaja membuat data contoh berulang.
+
+Isi seed kopsis pada database baru:
+
+| Kategori | Produk contoh |
+| --- | --- |
+| Alat Tulis | Pulpen Gel Hitam, Pensil 2B, Penghapus Putih |
+| Buku & Kertas | Buku Tulis 38 Lembar, Kertas Folio Bergaris |
+| Perlengkapan Sekolah | Map Kancing A4, Tali ID Card Merah |
+| Makanan Ringan | Biskuit Cokelat |
+| Minuman | Air Mineral 600 ml, Susu UHT Cokelat 200 ml |
+
+Total **5 kategori dan 10 produk** dengan gambar dari `public/products/`. Harga dan stok merupakan contoh. Penghapus disiapkan dengan stok terbatas dan tali ID card dengan stok habis untuk melihat variasi tampilan persediaan.
+
+Seed membuat tabel `users`, `categories`, dan `products`. Tabel `users` disediakan untuk kompatibilitas proyek, tanpa membuat akun login atau data pribadi siswa. Panel pengelola saat ini belum menggunakan autentikasi.
+
+Jalankan seed secara manual:
+
+```bash
+npm run db:seed
+```
+
+Seed melewati kategori dengan nama yang sudah ada dan produk dengan nama yang sama. Menjalankannya berulang secara berurutan tidak menggandakan data contoh atau menimpa perubahan harga, stok, deskripsi, maupun status aktif milik pengelola. Produk contoh yang dihapus atau diganti namanya dapat dibuat lagi saat seed berikutnya. Hindari menjalankan dua proses seed bersamaan.
+
+Data contoh dimasukkan dalam transaksi; jika insert gagal, perubahan data pada transaksi dibatalkan. Pembuatan struktur tabel tidak ikut dibatalkan karena perilaku DDL MariaDB. Seed tidak menghapus produk atau kategori lama dan bukan pengganti migrasi struktur database.
+
+Untuk import SQL langsung, pilih database secara eksplisit (perintah ini tidak membaca `.env`):
+
+```bash
+mariadb -h 127.0.0.1 -P 3306 -u koperasi -p koperasi < db/seed.sql
+```
+
+Ganti nama database terakhir, host, port, dan user sesuai konfigurasi. Tidak ada payload eksploitasi yang dimasukkan ke produk; dependensi rentan praktikum berasal dari `package.json`/lockfile, terpisah dari seed.
+
 
 ### Catatan penting tentang seed saat build
 
@@ -140,11 +194,31 @@ Jika suatu saat tidak ingin seed otomatis saat build, hapus script `prebuild` da
 Setelah MariaDB dan `.env` siap:
 
 ```bash
-cd /var/www/vuln-web
+cd /var/www/uuk-xi-inter-tkj
 npm run build
 ```
 
 Jika berhasil, aplikasi siap dijalankan dalam mode production.
+
+### Menjalankan pada komputer pengembangan
+
+Setelah `.env` dan MariaDB siap:
+
+```bash
+npm run db:seed
+npm run dev
+```
+
+Buka `http://localhost:3000`. Untuk menjalankan hasil build tanpa PM2, gunakan `npm start`.
+
+### Pemeriksaan kode tanpa mengubah database
+
+```bash
+npm run typecheck
+npx next build
+```
+
+`npx next build` melewati hook `prebuild` npm, sehingga tidak menjalankan seed. Build ini memeriksa kompilasi aplikasi; tidak membuktikan koneksi database atau keberhasilan CRUD. Untuk instalasi lengkap, tetap gunakan `npm run build` setelah MariaDB siap.
 
 ## 7. Instal PM2
 
@@ -162,6 +236,8 @@ pm2 -v
 
 ## 8. Menjalankan Next.js menggunakan PM2
 
+Nama proses PM2 adalah `kopsis-moklet-malang`, sedangkan nama folder proyek adalah `uuk-xi-inter-tkj`. Konfigurasi menggunakan `cwd: __dirname`, sehingga mengikuti lokasi folder `ecosystem.config.cjs`.
+
 Project sudah menyediakan:
 
 ```text
@@ -171,7 +247,7 @@ ecosystem.config.cjs
 Jalankan:
 
 ```bash
-cd /var/www/vuln-web
+cd /var/www/uuk-xi-inter-tkj
 pm2 start ecosystem.config.cjs
 ```
 
@@ -190,13 +266,13 @@ pm2 logs kopsis-moklet-malang
 Restart:
 
 ```bash
-pm2 restart all
+pm2 restart kopsis-moklet-malang
 ```
 
 Stop:
 
 ```bash
-pm2 stop all
+pm2 stop kopsis-moklet-malang
 ```
 
 ## 9. Agar PM2 otomatis hidup setelah server reboot
@@ -271,10 +347,10 @@ Gunakan `LAB_MODE=false` untuk katalog kopsis. Deskripsi produk dan kata kunci p
 Setelah source diperbarui:
 
 ```bash
-cd /var/www/vuln-web
-npm install
+cd /var/www/uuk-xi-inter-tkj
+npm ci
 npm run build
-pm2 restart all
+pm2 restart kopsis-moklet-malang
 ```
 
 Perhatikan bahwa `npm run build` akan menjalankan seed terlebih dahulu.
@@ -352,8 +428,8 @@ pm2 logs kopsis-moklet-malang
 Jika server sudah memiliki Node.js, npm, MariaDB, dan PM2, urutan paling singkat:
 
 ```bash
-cd /var/www/vuln
-npm install
+cd /var/www/uuk-xi-inter-tkj
+npm ci
 cp env.example .env
 nano .env
 npm run build
@@ -366,3 +442,12 @@ Kemudian buka dari komputer siswa:
 ```text
 http://IP_SERVER:3000
 ```
+
+## Status verifikasi dan struktur proyek
+
+- TypeScript dan kompilasi produksi berhasil saat implementasi.
+- Halaman informasi dan aset logo/font telah diperiksa melalui HTTP; endpoint `/api/lab/info` mengembalikan 404.
+- Koneksi MariaDB, seed, serta CRUD belum diuji di lingkungan implementasi karena `.env` database belum tersedia.
+- `app/`: halaman dan API; `components/`: komponen tampilan/form; `lib/`: akses data; `db/seed.sql`: struktur dan data contoh; `public/`: logo, font, ilustrasi; `docs/`: panduan praktikum dan snapshot audit.
+- Jalankan semua perintah dari root repository `uuk-xi-inter-tkj`. Pada contoh server, lokasinya adalah `/var/www/uuk-xi-inter-tkj`.
+- `.env`, `node_modules/`, dan `.next/` tidak diunggah ke Git. Sertakan `package-lock.json` agar versi latihan tetap konsisten.
