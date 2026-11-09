@@ -28,17 +28,13 @@ npm run audit:lab:json > audit-result.json
 npm audit --omit=dev
 ```
 
-Untuk Snyk, sediakan CLI di PATH dan autentikasi terlebih dahulu:
+Untuk Snyk, sediakan WEB di PATH dan autentikasi terlebih dahulu:
 
-```bash
-snyk auth
-npm run snyk:lab
-snyk test --file=package.json --package-manager=npm --json > snyk-result.json
-```
+``
 
 Temuan membuat scanner mengembalikan exit code bukan nol; ini hasil yang diharapkan dalam praktikum. Jangan jalankan `npm audit fix` sebelum merekam baseline. Kedua paket latihan tidak dipanggil oleh kode katalog; keberadaan versi rentan dalam dependency tree berbeda dengan bukti jalur eksploitasi aplikasi.
 
-Snapshot npm audit saat implementasi: **4 paket rentan (3 high, 1 moderate)**. Jumlah bisa berubah mengikuti advisory scanner. Snyk belum dijalankan karena CLI dan autentikasi tidak tersedia. Simpan token hanya di lingkungan lokal, bukan di Git.
+Snapshot npm audit saat implementasi: **4 paket rentan (3 high, 1 moderate)**. Jumlah bisa berubah mengikuti advisory scanner. Snyk belum dijalankan karena WEB dan autentikasi tidak tersedia. Simpan token hanya di lingkungan lokal, bukan di Git.
 
 
 ## Persyaratan
